@@ -1,13 +1,20 @@
 import cv2 as cv
 import numpy as np
+import os
 
-image = cv.imread('../lena.jpg')
-M = np.ones(image.shape, dtype="uint8") * 100
-added = cv.add(image, M)
-cv.imshow("Added", added)
+def main():
+    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
 
-M = np.ones(image.shape, dtype="uint8") * 50
-subtracted = cv.subtract(image, M)
-cv.imshow("Subtracted", subtracted)
+    image = cv.imread(path)
+    M = np.ones(image.shape, dtype="uint8") * 100
+    added = cv.add(image, M)
+    cv.imshow("Added", added)
 
-cv.waitKey(0)
+    M = np.ones(image.shape, dtype="uint8") * 50
+    subtracted = cv.subtract(image, M)
+    cv.imshow("Subtracted", subtracted)
+
+    cv.waitKey(0)
+
+if __name__ == '__main__':
+    main()

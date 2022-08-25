@@ -1,23 +1,31 @@
 import utils
 import cv2 as cv
+import os
 
-image = cv.imread('../lena.jpg')
-shifted = utils.translate(image, 200, 100)
-cv.imshow('Shifted', shifted)
+def main():
+    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
 
-rotated = utils.rotate(image, 45)
-cv.imshow('Rotated', rotated)
+    image = cv.imread(path)
+    shifted = utils.translate(image, 200, 100)
+    cv.imshow('Shifted', shifted)
 
-resized = utils.resize(image, 400)
-cv.imshow('Resized', resized)
+    rotated = utils.rotate(image, 45)
+    cv.imshow('Rotated', rotated)
 
-# 1 for horizontal flip
-# 0 for vertical flip
-# -1 for both
-flipped = cv.flip(image, 1)
-cv.imshow('Flipped', flipped)
+    resized = utils.resize(image, 400)
+    cv.imshow('Resized', resized)
 
-cropped = image[30:100, 240:300]
-cv.imshow('Cropped', cropped)
+    # 1 for horizontal flip
+    # 0 for vertical flip
+    # -1 for both
+    flipped = cv.flip(image, 1)
+    cv.imshow('Flipped', flipped)
 
-cv.waitKey(0)
+    cropped = image[30:100, 240:300]
+    cv.imshow('Cropped', cropped)
+
+    cv.waitKey(0)
+
+if __name__ == '__main__':
+    main()
+
