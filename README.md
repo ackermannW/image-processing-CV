@@ -32,10 +32,11 @@ pip install -r requirements.txt
 
 1. Basic image transformations
 2. Image space filtering 
-3. Edge detection
-4. Histogram and thresholding 
-5. Image segmentation
-6. Classification and object detection
+3. Image filtering in frequency domain
+4. Edge detection
+5. Histogram and thresholding 
+6. Image segmentation
+7. Classification and object detection
 
 # GPU setup 
 It is recommended to utilize GPU acceleration to speed up deep learning tasks.
