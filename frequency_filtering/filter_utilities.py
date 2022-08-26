@@ -9,6 +9,10 @@ def gaussLowPassFilter(shape, radius=10):  # Gaussian low pass filter
     kernel = np.exp(- (D ** 2) / (2 * D0**2))
     return kernel
 
+def gaussHighPassFilter(shape, radius=10):
+    kernel = 1 - gaussLowPassFilter(shape, radius)
+    return kernel
+
 def butterWorthLowPassFilter(shape, radius=10):
     # Butterworth filter:# Gauss = 1/(2*pi*s2) * exp(-(x**2+y**2)/(2*s2))
     u, v = np.mgrid[-1:1:2.0/shape[0], -1:1:2.0/shape[1]]
@@ -17,6 +21,27 @@ def butterWorthLowPassFilter(shape, radius=10):
     kernel = 1/(1 + ((D ** 2) / ( D0**2)))
     return kernel
 
+def butterWorthHighPassFilter(shape, radius=10):
+    kernel = 1 - butterWorthLowPassFilter(shape, radius)
+    return kernel
+
+def idealLowPassFilter(shape, radius=10):
+    m = shape[0]
+    n = shape[1]
+    blank = np.zeros((m,n), np.uint8)
+    xc = n//2
+    yc = n//2
+    blank[xc-radius:xc+radius, yc-radius:yc+radius] = 1
+    return blank
+
+def idealHighPassFilter(shape, radius=10):
+    m = shape[0]
+    n = shape[1]
+    blank = np.ones((m,n), np.uint8)
+    xc = n//2
+    yc = n//2
+    blank[xc-radius:xc+radius, yc-radius:yc+radius] = 0
+    return blank
 
 def dft2Image(image):  # Optimal extended fast Fourier transform
     # Centralized 2D array f (x, y) * - 1 ^ (x + y)
