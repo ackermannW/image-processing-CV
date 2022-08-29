@@ -24,16 +24,16 @@ def main():
     D0 = [10, 30, 60, 90, 120]  # radius
     for k in range(5):
         # (3) Construct Gaussian low pass filter
-        lpFilter = utils.gaussHighPassFilter((rPadded, cPadded), radius=D0[k])
+        hpFilter = utils.gaussHighPassFilter((rPadded, cPadded), radius=D0[k])
 
         # (5) Modify Fourier transform in frequency domain: Fourier transform point multiplication low-pass filter
-        dftLPfilter = np.zeros(dftImage.shape, dftImage.dtype)  # Size of fast Fourier transform (optimized size)
+        dftHPfilter = np.zeros(dftImage.shape, dftImage.dtype)  # Size of fast Fourier transform (optimized size)
         for j in range(2):
-            dftLPfilter[:rPadded, :cPadded, j] = dftImage[:rPadded, :cPadded, j] * lpFilter
+            dftHPfilter[:rPadded, :cPadded, j] = dftImage[:rPadded, :cPadded, j] * hpFilter
 
         # (6) The inverse Fourier transform is performed on the low-pass Fourier transform, and only the real part is taken
         idft = np.zeros(dftImage.shape[:2], np.float32)  # Size of fast Fourier transform (optimized size)
-        cv.dft(dftLPfilter, idft, cv.DFT_REAL_OUTPUT + cv.DFT_INVERSE + cv.DFT_SCALE)
+        cv.dft(dftHPfilter, idft, cv.DFT_REAL_OUTPUT + cv.DFT_INVERSE + cv.DFT_SCALE)
 
         # (7) Centralized 2D array g (x, y) * - 1 ^ (x + y)
         mask2 = np.ones(dftImage.shape[:2])
@@ -43,14 +43,14 @@ def main():
 
         # (8) Intercept the upper left corner, the size is equal to the input image
         result = np.clip(idftCen, 0, 255)  # Truncation function, limiting the value to [0255]
-        imgLPF = result.astype(np.uint8)
-        imgLPF = imgLPF[:rows, :cols]
+        imgHPF = result.astype(np.uint8)
+        imgHPF = imgHPF[:rows, :cols]
 
         plt.subplot(2,3,k+2), plt.title("GHPF rebuild(n={})".format(D0[k])), plt.axis('off')
-        plt.imshow(imgLPF, cmap='gray')
+        plt.imshow(imgHPF, cmap='gray')
 
     print("image.shape:{}".format(imgGray.shape))
-    print("lpFilter.shape:{}".format(lpFilter.shape))
+    print("hpFilter.shape:{}".format(hpFilter.shape))
     print("dftImage.shape:{}".format(dftImage.shape))
 
     plt.tight_layout()
