@@ -10,29 +10,30 @@ import cv2 as cv
 from matplotlib import pyplot
 from matplotlib.patches import Rectangle
 from mtcnn import MTCNN
+import os
+
 # load image from file
-slika = cv.imread("face_detection\lica.jpg")
+path = os.path.join('..','..', os.getcwd(), 'images', 'faces.jpg')
+image = cv.imread(path)
 
-# pip install mtcnn
+cv.imshow('Lica', image)
+cv.waitKey(0)
 
-#cv.imshow('Lica', slika)
-#cv.waitKey(0)
-
-slika = cv.cvtColor(slika, cv.COLOR_BGR2RGB)
-pixels = pyplot.imread('face_detection\lica.jpg')
+image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
+pixels = pyplot.imread(path)
 
 # create the detector, using default weights
 detector = MTCNN()
 # detect faces in the image
-faces = detector.detect_faces(slika)
+faces = detector.detect_faces(image)
 # plot the image
-pyplot.imshow(slika)
+pyplot.imshow(image)
 # get the context for drawing boxes
 ax = pyplot.gca()
 # get coordinates from the first face
 
-for  faca in faces:
-     dira =faca['box']
+for  face in faces:
+     dira =face['box']
      x=dira[0]
      y=dira[1]
      width=dira[2]
