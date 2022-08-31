@@ -16,9 +16,6 @@ import os
 path = os.path.join('..','..', os.getcwd(), 'images', 'faces.jpg')
 image = cv.imread(path)
 
-cv.imshow('Lica', image)
-cv.waitKey(0)
-
 image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
 pixels = pyplot.imread(path)
 
