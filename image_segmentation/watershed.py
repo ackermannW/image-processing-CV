@@ -65,8 +65,11 @@ def main():
     plt.imshow(markers, cmap='jet')
 
     markers = cv.watershed(img,markers)
-    img[markers == -1] = [255,0,0]
+    img[markers == -1] = [0,0,255]
 
+    plt.subplot(3,3,8)
+    plt.title('Segmentated')
+    plt.imshow(cv.cvtColor(img, cv.COLOR_BGR2RGB))
     plt.show()
 
 if __name__=='__main__':
