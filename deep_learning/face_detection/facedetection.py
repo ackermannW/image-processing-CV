@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Tue Feb 15 20:00:45 2022
-
-@author: Korisnik
-"""
-
 # face detection with mtcnn on a photograph
 import cv2 as cv
 from matplotlib import pyplot
