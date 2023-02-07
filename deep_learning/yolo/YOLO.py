@@ -8,8 +8,6 @@ Created on Mon Mar 14 19:21:05 2022
 import cv2
  
 img = cv2.imread('yolo\cars.jpg')
-#cv2.imshow('Test', img)
-#cv2.waitKey(0)
 
 with open('yolo\coco.names', 'r') as f:
     classes = f.read().splitlines()
