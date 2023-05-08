@@ -9,7 +9,7 @@ def main():
     M = np.ones(image.shape, dtype="uint8") * 100
     added = cv.add(image, M)
     cv.imshow("Added", added)
-
+    
     M = np.ones(image.shape, dtype="uint8") * 50
     subtracted = cv.subtract(image, M)
     cv.imshow("Subtracted", subtracted)
