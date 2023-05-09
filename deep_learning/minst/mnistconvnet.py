@@ -4,8 +4,8 @@
 """
 
 import numpy as np
-from tensorflow import keras
-from tensorflow.keras import layers
+import keras
+from keras import layers
 import matplotlib.pyplot as plt
 
 """

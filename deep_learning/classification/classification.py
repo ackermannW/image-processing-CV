@@ -1,14 +1,12 @@
 import keras
 from keras.datasets import cifar10
 from keras.models import Sequential
-from keras import datasets, layers, models
+from keras import layers
 from keras.utils import np_utils
-from keras import regularizers
-from keras.layers import Dense, Dropout, BatchNormalization
 import matplotlib.pyplot as plt
 import numpy as np
 
-(train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
+(train_images, train_labels), (test_images, test_labels) = cifar10.load_data()
 
 # Checking the number of rows (records) and columns (features)
 print(train_images.shape)
