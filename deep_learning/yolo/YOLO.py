@@ -6,13 +6,18 @@ Created on Mon Mar 14 19:21:05 2022
 """
 
 import cv2
- 
-img = cv2.imread('yolo\cars.jpg')
+import os
 
-with open('yolo\coco.names', 'r') as f:
+current_path = os.path.join(os.getcwd(), 'deep_learning','yolo')
+img = cv2.imread(os.path.join(current_path, 'cars.jpg'))
+
+with open(os.path.join(current_path, 'coco.names'), 'r') as f:
     classes = f.read().splitlines()
- 
-net = cv2.dnn.readNetFromDarknet('yolo\yolov4.cfg', 'yolo\yolov4.weights')
+
+config_path = os.path.join(current_path, 'yolov4.cfg')
+weights_path = os.path.join(current_path, 'yolov4.weights')
+
+net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
  
 model = cv2.dnn_DetectionModel(net)
 model.setInputParams(scale=1 / 255, size=(416, 416), swapRB=True)
