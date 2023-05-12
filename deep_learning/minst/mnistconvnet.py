@@ -6,6 +6,7 @@
 import numpy as np
 import keras
 from keras import layers
+from keras.datasets import mnist
 import matplotlib.pyplot as plt
 
 """
@@ -17,7 +18,7 @@ num_classes = 10
 input_shape = (28, 28, 1)
 
 # the data, split between train and test sets
-(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+(x_train, y_train), (x_test, y_test) = mnist.load_data()
 
 # Scale images to the [0, 1] range
 x_train = x_train.astype("float32") / 255
@@ -56,7 +57,7 @@ model.add(layers.Dense(128, activation='relu'))
 model.add( layers.Dropout(0.2))
 
 model.add(layers.Dense(num_classes, activation="softmax"))
-model.add( layers.Dropout(0.2))
+model.add(layers.Dropout(0.2))
 
 model.summary()
 
