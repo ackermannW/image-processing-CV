@@ -55,20 +55,19 @@ def butterWorthHighPassFilter(shape, radius=10):
 def idealLowPassFilter(shape, radius=10):
     m = shape[0]
     n = shape[1]
-    blank = np.zeros((m,n), np.uint8)
-    xc = n//2
-    yc = n//2
-    blank[xc-radius:xc+radius, yc-radius:yc+radius] = 1
-    return blank
+    filter = np.zeros(shape=shape, dtype = "uint8")
+    cv.circle(filter, (m//2, n//2), radius, 1, -1)
+    return filter
 
 def idealHighPassFilter(shape, radius=10):
-    m = shape[0]
-    n = shape[1]
-    blank = np.ones((m,n), np.uint8)
-    xc = n//2
-    yc = n//2
-    blank[xc-radius:xc+radius, yc-radius:yc+radius] = 0
-    return blank
+    # m = shape[0]
+    # n = shape[1]
+    # blank = np.ones((m,n), np.uint8)
+    # xc = n//2
+    # yc = n//2
+    # blank[xc-radius:xc+radius, yc-radius:yc+radius] = 0
+    # return blank
+    return np.ones(shape=shape, dtype='uint8') - idealLowPassFilter(shape, radius)
 
 def idealPassBandFilter(shape, innerRadius=0, outerRadius=10):
     lp = idealLowPassFilter(shape, outerRadius)
