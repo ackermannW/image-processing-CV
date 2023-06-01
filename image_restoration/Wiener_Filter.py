@@ -12,7 +12,7 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 def blur(img, kernel_size = 3):
 	dummy = np.copy(img)
 	h = np.eye(kernel_size) / kernel_size
-	dummy = convolve2d(dummy, h, mode = 'valid')
+	dummy = convolve2d(dummy, h, mode = 'same',)
 	return dummy
 
 def add_gaussian_noise(img, sigma):
@@ -64,8 +64,8 @@ if __name__ == '__main__':
     fig = plt.figure(figsize=(12, 10))
 
     for i in range(len(display)):
-	    fig.add_subplot(2, 2, i+1)
-	    plt.imshow(display[i], cmap = 'gray')
-	    plt.title(label[i])
+        fig.add_subplot(2, 2, i+1)
+        plt.imshow(display[i], cmap = 'gray')
+        plt.title(label[i])
 
     plt.show()

@@ -33,8 +33,8 @@ if __name__ == '__main__':
 			 'Median Filter', 'Wiener Filter']
 
     for i in range(len(display)):
-	    fig.add_subplot(2, 2, i+1)
-	    plt.imshow(display[i], cmap = 'gray')
-	    plt.title(title[i])
+        fig.add_subplot(2, 2, i+1)
+        plt.imshow(display[i], cmap = 'gray')
+        plt.title(title[i])
 	
     plt.show()
