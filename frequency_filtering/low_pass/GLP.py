@@ -4,13 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
-
-import filter_utilities as utils
-
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', '..', 'images', 'lena.jpg'))
     imgGray  = cv.imread(path, flags=0) # flags=0 to import as grrayscale
     f = np.fft.fft2(imgGray)
     f_shift = np.fft.fftshift(f)

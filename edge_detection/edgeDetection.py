@@ -1,9 +1,11 @@
 import cv2 as cv
 import numpy as np
 import os
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'm1a2_abrams_l5.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'm1a2_abrams_l5.jpg'))
     img = cv.imread(path)
     cv.imshow('Original', img)
 
