@@ -14,7 +14,7 @@ digital image processing.
 1. Create conda environment:
 
 ``` sh
-conda create --name digital-image-processing python==3.8
+conda create --name digital-image-processing python==3.12
 ```
 2. Change active environment:
 
