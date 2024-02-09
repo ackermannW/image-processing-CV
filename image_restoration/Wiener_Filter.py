@@ -44,7 +44,8 @@ def rgb2gray(rgb):
 
 if __name__ == '__main__':
 	# Load image and convert it to gray scale
-    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
     img = rgb2gray(plt.imread(path))
 
     # Blur the image

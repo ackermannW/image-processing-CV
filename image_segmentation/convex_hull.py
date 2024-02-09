@@ -2,9 +2,11 @@ from operator import countOf
 import numpy as np
 import cv2 as cv
 import os
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'house.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'house.jpg'))
     image  = cv.imread(path)
     orig_image=image.copy()
     cv.imshow('original image',orig_image)

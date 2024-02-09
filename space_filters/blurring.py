@@ -1,6 +1,7 @@
 import cv2 as cv
 import os
 import numpy as np
+import sys
 
 def noisy(noise_typ,image):
    if noise_typ == "gauss":
@@ -42,7 +43,8 @@ def noisy(noise_typ,image):
       return noisy
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
     img = cv.imread(path)
     noisy_gauss_img = noisy("gauss", img)
     noisy_salt_pepper_img = noisy("s&p", img)

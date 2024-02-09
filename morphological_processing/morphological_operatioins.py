@@ -2,9 +2,11 @@ import os
 import cv2 as cv
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'coins.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'coins.jpg'))
     img  = cv.imread(path, flags=0) # flag 0 for grayscale image
     ret, thresh = cv.threshold(img, 100, 255, cv.THRESH_BINARY_INV)
     #thresh = cv.adaptiveThreshold(img, 255, cv.ADAPTIVE_THRESH_MEAN_C, cv.THRESH_BINARY, 11, 3)

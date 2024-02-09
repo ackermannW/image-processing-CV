@@ -2,9 +2,11 @@ import os
 import numpy as np
 import cv2 as cv
 from matplotlib import pyplot as plt
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'coins.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'coins.jpg'))
     img  = cv.imread(path)
     gray = cv.cvtColor(img,cv.COLOR_BGR2GRAY)
     ret, thresh = cv.threshold(gray,0,255,cv.THRESH_BINARY_INV+cv.THRESH_OTSU)

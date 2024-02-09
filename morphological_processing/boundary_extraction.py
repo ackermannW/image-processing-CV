@@ -3,9 +3,11 @@ import cv2 as cv
 import os
 import numpy as np
 import matplotlib.pyplot as plt
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'coins.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'coins.jpg'))
     img  = cv.imread(path) # flag 0 for grayscale image
     gray = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
     # Read the image as a grayscale image

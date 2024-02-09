@@ -10,9 +10,10 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 
 if __name__ == '__main__':
 	# Load image and convert it to gray scale
-    file_name = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
 
-    img = cv.imread(file_name)
+    img = cv.imread(path)
     img = cv.cvtColor(img, cv.COLOR_BGR2GRAY)
 	# Blur image
     blurred_img = blur(img, kernel_size = 9)

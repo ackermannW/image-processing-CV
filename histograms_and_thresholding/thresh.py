@@ -3,9 +3,11 @@ from cv2 import threshold
 import matplotlib.pyplot as plt
 from numpy import histogram
 import os
+import sys 
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
     img = cv.imread(path)
 
     cv.imshow('Original', img)

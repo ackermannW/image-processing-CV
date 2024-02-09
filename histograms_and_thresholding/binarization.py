@@ -2,9 +2,11 @@ import cv2 as cv
 import numpy as np
 from matplotlib import pyplot as plt
 import os
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'lena.jpg')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
     img = cv.imread(path, cv.IMREAD_GRAYSCALE)
     assert img is not None, "file could not be read, check with os.path.exists()"
     # global thresholding

@@ -1,9 +1,11 @@
 import numpy as np
 import cv2 as cv
 import os
+import sys
 
 def main():
-    path = os.path.join('..', os.getcwd(), 'images', 'squares.png')
+    script_path = os.path.abspath(sys.argv[0])
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'squares.jpg'))
     image  = cv.imread(path)
     cv.imshow('input image', image)
     cv.waitKey(0)
