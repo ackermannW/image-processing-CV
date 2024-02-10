@@ -4,60 +4,50 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
-
-import filter_utilities as utils
-
 def main():
     script_path = os.path.abspath(sys.argv[0])
     path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', '..', 'images', 'lena.jpg'))
     imgGray  = cv.imread(path, flags=0) # flags=0 to import as grrayscale
-    rows, cols = imgGray.shape[:2]  # The height and width of the picture
+    f = np.fft.fft2(imgGray)
+    f_shift = np.fft.fftshift(f)
 
-     # (2) Fast Fourier transform
-    dftImage = utils.dft2Image(imgGray)  # Fast Fourier transform (rPad, cPad, 2)
-    rPadded, cPadded = dftImage.shape[:2]  # Fast Fourier transform size, original image size optimization
-    print("dftImage.shape:{}".format(dftImage.shape))
+    M,N = f.shape
+    H = np.zeros((M,N), dtype=np.float32)
+    W = 200
+    C0 = 90
+    for u in range(M):
+        for v in range(M):
+            D = np.sqrt((u-M/2)**2 + (v-N/2)**2)
+            H[u,v] = np.exp(-((D**2 - C0**2)/(D*W+0.01))**2)
     
-    plt.figure(figsize=(10, 6))
-    plt.subplot(2, 3, 1),plt.title("Original"), plt.axis('off'), plt.imshow(imgGray, cmap='gray')
+    G_shift = f_shift * H
+    G = np.fft.ifftshift(G_shift)
+    
+    g = np.abs(np.fft.ifft2(G))
 
-    D0 = [10, 30, 60, 90, 120]  # radius
-    for k in range(5):
-        # (3) Construct Gaussian low pass filter
-        lpFilter = utils.gaussBandPassFilter((rPadded, cPadded), radius=D0[k], center=0.5)
+    fig, axs = plt.subplots(2,3)
+    axs[0,0].imshow(imgGray, cmap='gray')
+    axs[0,0].set_title('Original image')
 
-        # (5) Modify Fourier transform in frequency domain: Fourier transform point multiplication low-pass filter
-        dftLPfilter = np.zeros(dftImage.shape, dftImage.dtype)  # Size of fast Fourier transform (optimized size)
-        for j in range(2):
-            dftLPfilter[:rPadded, :cPadded, j] = dftImage[:rPadded, :cPadded, j] * lpFilter
+    axs[0,1].imshow(np.log1p(np.abs(f_shift)), cmap='gray')
+    axs[0,1].set_title('Magnitude spectrum')
 
-        # (6) The inverse Fourier transform is performed on the low-pass Fourier transform, and only the real part is taken
-        idft = np.zeros(dftImage.shape[:2], np.float32)  # Size of fast Fourier transform (optimized size)
-        cv.dft(dftLPfilter, idft, cv.DFT_REAL_OUTPUT + cv.DFT_INVERSE + cv.DFT_SCALE)
+    axs[0,2].imshow(H, cmap='gray')
+    axs[0,2].set_title('Gaussian pass band')
 
-        # (7) Centralized 2D array g (x, y) * - 1 ^ (x + y)
-        mask2 = np.ones(dftImage.shape[:2])
-        mask2[1::2, ::2] = -1
-        mask2[::2, 1::2] = -1
-        idftCen = idft * mask2  # g(x,y) * (-1)^(x+y)
+    axs[1,0].imshow(np.log1p(np.abs(G_shift)), cmap='gray')
+    axs[1,0].set_title('Centered filtered FT')
 
-        # (8) Intercept the upper left corner, the size is equal to the input image
-        result = np.clip(idftCen, 0, 255)  # Truncation function, limiting the value to [0255]
-        imgLPF = result.astype(np.uint8)
-        imgLPF = imgLPF[:rows, :cols]
+    axs[1,1].imshow(np.log1p(np.abs(G)), cmap='gray')
+    axs[1,1].set_title('Shifted filtered FT')
 
-        plt.subplot(2,3,k+2), plt.title("GBPF rebuild(n={})".format(D0[k])), plt.axis('off')
-        plt.imshow(imgLPF, cmap='gray')
+    axs[1,2].imshow(g, cmap='gray')
+    axs[1,2].set_title('Resotred image')
 
-    print("image.shape:{}".format(imgGray.shape))
-    print("lpFilter.shape:{}".format(lpFilter.shape))
-    print("dftImage.shape:{}".format(dftImage.shape))
+    fig.show()
 
     plt.tight_layout()
 
     plt.show()
-    # cv.waitKey(0)
 if __name__ == '__main__':
     main()
