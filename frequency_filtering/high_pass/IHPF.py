@@ -4,59 +4,50 @@ import matplotlib.pyplot as plt
 import numpy as np
 import sys
 
-SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(SCRIPT_DIR))
-
-import filter_utilities as utils
-
 def main():
     script_path = os.path.abspath(sys.argv[0])
     path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', '..', 'images', 'lena.jpg'))
+
     imgGray  = cv.imread(path, flags=0) # flags=0 to import as grrayscale
-    rows, cols = imgGray.shape[:2]  # The height and width of the picture
-    plt.figure(figsize=(10, 6))
-    plt.subplot(2, 3, 1),plt.title("Original"), plt.axis('off'), plt.imshow(imgGray, cmap='gray')
 
-     # (2) Fast Fourier transform
-    dftImage = utils.dft2Image(imgGray)  # Fast Fourier transform (rPad, cPad, 2)
-    rPadded, cPadded = dftImage.shape[:2]  # Fast Fourier transform size, original image size optimization
-    print("dftImage.shape:{}".format(dftImage.shape))
+    f = np.fft.fft2(imgGray)
+    f_shift = np.fft.fftshift(f)
 
-    D0 = [10, 30, 60, 90, 120]  # radius
-    for k in range(5):
-        # (3) Construct Gaussian low pass filter
-        hpFilter = utils.idealHighPassFilter((rPadded, cPadded), radius=D0[k])
+    M,N = f.shape
+    H = np.zeros((M,N), dtype=np.float32)
+    D0 = 30
+    
+    H = np.ones(shape=f.shape, dtype = "uint8")
+    cv.circle(H, (M//2, N//2), D0, 0*(255,255,255), -1)
 
-        # (5) Modify Fourier transform in frequency domain: Fourier transform point multiplication low-pass filter
-        dfthpFilter = np.zeros(dftImage.shape, dftImage.dtype)  # Size of fast Fourier transform (optimized size)
-        for j in range(2):
-            dfthpFilter[:rPadded, :cPadded, j] = dftImage[:rPadded, :cPadded, j] * hpFilter
+    G_shift = f_shift * H
+    G = np.fft.ifftshift(G_shift)
+    
+    g = np.abs(np.fft.ifft2(G))
 
-        # (6) The inverse Fourier transform is performed on the low-pass Fourier transform, and only the real part is taken
-        idft = np.zeros(dftImage.shape[:2], np.float32)  # Size of fast Fourier transform (optimized size)
-        cv.dft(dfthpFilter, idft, cv.DFT_REAL_OUTPUT + cv.DFT_INVERSE + cv.DFT_SCALE)
+    fig, axs = plt.subplots(2,3)
+    axs[0,0].imshow(imgGray, cmap='gray')
+    axs[0,0].set_title('Original image')
 
-        # (7) Centralized 2D array g (x, y) * - 1 ^ (x + y)
-        mask2 = np.ones(dftImage.shape[:2])
-        mask2[1::2, ::2] = -1
-        mask2[::2, 1::2] = -1
-        idftCen = idft * mask2  # g(x,y) * (-1)^(x+y)
+    axs[0,1].imshow(np.log1p(np.abs(f_shift)), cmap='gray')
+    axs[0,1].set_title('Magnitude spectrum')
 
-        # (8) Intercept the upper left corner, the size is equal to the input image
-        result = np.clip(idftCen, 0, 255)  # Truncation function, limiting the value to [0255]
-        imgHPF = result.astype(np.uint8)
-        imgHPF = imgHPF[:rows, :cols]
+    axs[0,2].imshow(H, cmap='gray')
+    axs[0,2].set_title('Ideal high pass filter')
 
-        plt.subplot(2,3,k+2), plt.title("IHPF rebuild(n={})".format(D0[k])), plt.axis('off')
-        plt.imshow(imgHPF, cmap='gray')
+    axs[1,0].imshow(np.log1p(np.abs(G_shift)), cmap='gray')
+    axs[1,0].set_title('Centered filtered FT')
 
-    print("image.shape:{}".format(imgGray.shape))
-    print("hpFilter.shape:{}".format(hpFilter.shape))
-    print("dftImage.shape:{}".format(dftImage.shape))
+    axs[1,1].imshow(np.log1p(np.abs(G)), cmap='gray')
+    axs[1,1].set_title('Shifted filtered FT')
+
+    axs[1,2].imshow(g, cmap='gray')
+    axs[1,2].set_title('Resotred image')
+
+    fig.show()
 
     plt.tight_layout()
 
     plt.show()
-    # cv.waitKey(0)
 if __name__ == '__main__':
     main()
