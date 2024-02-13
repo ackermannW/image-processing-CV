@@ -7,8 +7,7 @@ import sys
 def main():
     script_path = os.path.abspath(sys.argv[0])
     path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', '..', 'images', 'moon.png'))
-    imgGray = cv.imread(path, 0)
-    
+    imgGray = cv.imread(path, 0)/255
     f = np.fft.fft2(imgGray)
     f_shift = np.fft.fftshift(f)
 
@@ -22,11 +21,12 @@ def main():
     G_shift = f_shift * H
     G = np.fft.ifftshift(G_shift)
     g = np.abs(np.fft.ifft2(G))
-
-    g = 2*(g - np.min(g))/(np.max(g) - np.min(g)) - 1
-
+    g = g / np.max(g)
+    
     c = -1
     sharpened_image = imgGray + c*g
+    
+    sharpened_image = np.clip(sharpened_image, 0,1)*255
 
     fig, axs = plt.subplots(2,3)
 
@@ -42,7 +42,7 @@ def main():
     axs[1,0].imshow(np.log1p(np.abs(G_shift)), cmap='gray')
     axs[1,0].set_title('Filtered spectrum')
 
-    axs[1,1].imshow(-g, cmap='gray')
+    axs[1,1].imshow(g, cmap='gray')
     axs[1,1].set_title('Mask')
 
     axs[1,2].imshow(sharpened_image, cmap='gray')
