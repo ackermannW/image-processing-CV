@@ -2,11 +2,12 @@ import cv2 as cv
 import numpy as np
 import os 
 import sys
+import matplotlib.pyplot as plt
 
 script_path = os.path.abspath(sys.argv[0])
 path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'm1a2_abrams_l5.jpg'))
 image = cv.imread(path)
-cv.imshow('Original', image)
+
 # Read the image
 
 # Convert the image to grayscale
@@ -24,7 +25,20 @@ mask = cv.bitwise_and(image, image, mask=edges)
 sharpened = cv.addWeighted(image, 1.5, mask, -0.5, 0)
 
 # Display the original and sharpened images
-cv.imshow('Original', image)
-cv.imshow('Sharpened', sharpened)
+
+fig, axs = plt.subplots(1, 2)
+
+axs[0].imshow(image)
+axs[0].set_title('Original image')
+
+axs[1].imshow(sharpened)
+axs[1].set_title('Sharpened image')
+
+fig.show()
+
+plt.tight_layout()
+plt.show()
+
+print("Press 0 to close.")
 cv.waitKey(0)
 cv.destroyAllWindows()
