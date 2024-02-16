@@ -38,6 +38,10 @@ def main():
 
     axs[1,1].imshow(g_clip, cmap='gray')
     axs[1,1].set_title('Enhanced image')
+
+    for axis in axs.flat:
+        axis.axis('off')
+
     fig.show()
     plt.show()
 
