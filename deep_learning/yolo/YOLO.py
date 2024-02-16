@@ -7,6 +7,7 @@ Created on Mon Mar 14 19:21:05 2022
 
 import cv2
 import os
+import urllib.request
 
 current_path = os.path.join(os.getcwd(), 'deep_learning','yolo')
 img = cv2.imread(os.path.join(current_path, 'cars.jpg'))
@@ -15,9 +16,15 @@ with open(os.path.join(current_path, 'coco.names'), 'r') as f:
     classes = f.read().splitlines()
 
 config_path = os.path.join(current_path, 'yolov4.cfg')
-weights_path = os.path.join(current_path, 'yolov4.weights')
 
-net = cv2.dnn.readNetFromDarknet(config_path, weights_path)
+url = "https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights"
+filename = os.path.join(current_path, 'yolov4.weights')
+if not os.path.isfile(path=filename):
+    print("Downloading YOLO weights. This might take a while. File is approximately 250MB.")
+    urllib.request.urlretrieve(url, 'yolov4.weights')
+    print("Downloaded YOLO weights.")
+
+net = cv2.dnn.readNetFromDarknet(config_path, filename)
  
 model = cv2.dnn_DetectionModel(net)
 model.setInputParams(scale=1 / 255, size=(416, 416), swapRB=True)
