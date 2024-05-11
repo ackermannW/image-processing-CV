@@ -25,24 +25,29 @@ def main():
                 noisy[i][j] = img[i][j]
 
     filtered = cv.medianBlur(noisy, 3)
+    gaussian = cv.GaussianBlur(noisy, (3,3), 0)
+    fig, axs = plt.subplots(2,2)
+
+    axs[0,0].imshow(img, cmap='gray')
+    axs[0,0].set_title('Original image')
+    axs[0,0].set_xticklabels([])
+    axs[0,0].set_yticklabels([])
+
+    axs[0,1].imshow(noisy, cmap='gray')
+    axs[0,1].set_title('Salt and pepper')
+    axs[0,1].set_xticklabels([])
+    axs[0,1].set_yticklabels([])
+
+    axs[1,0].imshow(gaussian, cmap='gray')
+    axs[1,0].set_title('Median filtered')
+    axs[1,0].set_xticklabels([])
+    axs[1,0].set_yticklabels([])
+
+    axs[1,1].imshow(filtered, cmap='gray')
+    axs[1,1].set_title('Median filtered')
+    axs[1,1].set_xticklabels([])
+    axs[1,1].set_yticklabels([])
     
-    fig, axs = plt.subplots(1,3)
-
-    axs[0].imshow(img, cmap='gray')
-    axs[0].set_title('Original image')
-    axs[0].set_xticklabels([])
-    axs[0].set_yticklabels([])
-
-    axs[1].imshow(noisy, cmap='gray')
-    axs[1].set_title('Salt and pepper')
-    axs[1].set_xticklabels([])
-    axs[1].set_yticklabels([])
-
-    axs[2].imshow(filtered, cmap='gray')
-    axs[2].set_title('Median filtered')
-    axs[2].set_xticklabels([])
-    axs[2].set_yticklabels([])
-
     fig.show()
     plt.show()
 if __name__=='__main__':
