@@ -39,7 +39,7 @@ def main():
     axs[0,1].set_yticklabels([])
 
     axs[1,0].imshow(gaussian, cmap='gray')
-    axs[1,0].set_title('Median filtered')
+    axs[1,0].set_title('Gaussian filtered')
     axs[1,0].set_xticklabels([])
     axs[1,0].set_yticklabels([])
 
