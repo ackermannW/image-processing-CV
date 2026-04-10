@@ -8,14 +8,12 @@ def notch_reject_filter(shape, d0=9, u_k=0, v_k=0):
     # Initialize filter with zeros
     H = np.zeros((P, Q))
 
-    # Traverse through filter
-    for u in range(0, P):
-        for v in range(0, Q):
-            # Get euclidean distance from point D(u,v) to the center
-            D_uv = np.sqrt((u - P / 2 + u_k) ** 2 + (v - Q / 2 + v_k) ** 2)
-            D_muv = np.sqrt((u - P / 2 - u_k) ** 2 + (v - Q / 2 - v_k) ** 2)
-
-            H[u,v] = (1/(1+(d0/D_uv)**4))*(1/(1+(d0/D_muv)**4))
+    u = np.arange(P)
+    v = np.arange(Q)
+    U, V = np.meshgrid(u, v, indexing='ij')
+    D_uv = np.sqrt((U - P/2 + u_k)**2 + (V - Q/2 + v_k)**2)
+    D_muv = np.sqrt((U - P/2 - u_k)**2 + (V - Q/2 - v_k)**2)
+    H = (1 / (1 + (d0 / D_uv)**4)) * (1 / (1 + (d0 / D_muv)**4))
 
     return H
 
