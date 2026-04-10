@@ -12,11 +12,10 @@ def main():
     f_shift = np.fft.fftshift(f)
 
     M,N = f.shape
-    H = np.zeros((M,N), dtype=np.float32)
-
-    for u in range(M):
-        for v in range(N):
-            H[u,v] = -4*np.pi*np.pi*((u-M/2)**2 + (v-N/2)**2)
+    u = np.arange(M) - M // 2
+    v = np.arange(N) - N // 2
+    U, V = np.meshgrid(u, v, indexing='ij')
+    H = (-4 * np.pi * np.pi * (U**2 + V**2)).astype(np.float32)
 
     G_shift = f_shift * H
     G = np.fft.ifftshift(G_shift)

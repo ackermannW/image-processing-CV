@@ -12,12 +12,12 @@ def main():
     f = np.fft.fftshift(np.fft.fft2(img))
 
     M,N = f.shape
-    H = np.zeros((M,N), dtype=np.float32)
     D0 = 10
-    for u in range(M):
-        for v in range(N):
-            D = np.sqrt((u - M/2)**2+(v-N/2)**2)
-            H[u,v] = np.exp(-D**2/(2*D0*D0))
+    u = np.arange(M) - M // 2
+    v = np.arange(N) - N // 2
+    U, V = np.meshgrid(u, v, indexing='ij')
+    D = np.sqrt(U**2 + V**2)
+    H = np.exp(-D**2 / (2 * D0**2)).astype(np.float32)
 
     FLP = H*f
 
