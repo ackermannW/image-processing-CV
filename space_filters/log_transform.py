@@ -6,7 +6,7 @@ import sys
 
 def main():
     script_path = os.path.abspath(sys.argv[0])
-    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
+    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'frequency.png'))
     
     r = np.arange(0, 255)
     c = 255/np.log(1+255)
