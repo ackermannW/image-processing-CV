@@ -1,67 +1,116 @@
 import cv2 as cv
-import os
 import numpy as np
-import sys
+import matplotlib.pyplot as plt
+from pathlib import Path
 
-def noisy(noise_typ,image):
-   if noise_typ == "gauss":
-      mean = 0
-      sigma = 5
-      gauss = np.random.normal(mean,sigma,image.shape).astype(np.uint8)
-      noisy = cv.add(image, gauss)
-      return noisy
-   elif noise_typ == "s&p":
-      pepper = 0.05
-      salt = 1 - pepper
-      M,N = image.shape
-      noisy = np.zeros((M,N), dtype='uint8')
-      for i in range(M):
-        for j in range(N):
-            rdn = np.random.random()
-            if rdn < pepper:
-                noisy[i][j] = 0
-            elif rdn > salt:
-                noisy[i][j] = 255
-            else:
-                noisy[i][j] = image[i][j]
-       
-      return noisy
-   elif noise_typ == "poisson":
-      vals = len(np.unique(image))
-      vals = 2 ** np.ceil(np.log2(vals))
-      noisy = np.random.poisson(image * vals) / float(vals)
-      return noisy
-   elif noise_typ =="speckle":
-      row,col,ch = image.shape
-      gauss = np.random.randn(row,col,ch)
-      gauss = gauss.reshape(row,col,ch)        
-      noisy = image + image * gauss
-      return noisy
+# ------------------------------------------------------------
+# Noise generation functions
+# ------------------------------------------------------------
+
+def add_gaussian_noise(image, mean=0, sigma=20):
+    noise = np.random.normal(mean, sigma, image.shape)
+
+    noisy = image.astype(np.float32) + noise
+    noisy = np.clip(noisy, 0, 255)
+
+    return noisy.astype(np.uint8)
+
+
+def add_salt_pepper_noise(image, amount=0.05):
+    noisy = image.copy()
+
+    # Number of pixels to modify
+    num_pixels = int(amount * image.size)
+
+    # Salt noise
+    coords = (
+        np.random.randint(0, image.shape[0], num_pixels),
+        np.random.randint(0, image.shape[1], num_pixels)
+    )
+    noisy[coords] = 255
+
+    # Pepper noise
+    coords = (
+        np.random.randint(0, image.shape[0], num_pixels),
+        np.random.randint(0, image.shape[1], num_pixels)
+    )
+    noisy[coords] = 0
+
+    return noisy
+
+def show_images(images, titles, cols=3, figsize=(14, 8)):
+    rows = int(np.ceil(len(images) / cols))
+
+    plt.figure(figsize=figsize)
+
+    for i, (img, title) in enumerate(zip(images, titles), start=1):
+        plt.subplot(rows, cols, i)
+
+        plt.imshow(img, cmap='gray', vmin=0, vmax=255)
+        plt.title(title)
+        plt.axis('off')
+
+    plt.tight_layout()
+    plt.show()
 
 def main():
-    script_path = os.path.abspath(sys.argv[0])
-    path = os.path.abspath(os.path.join(os.path.dirname(script_path), '..', 'images', 'lena.jpg'))
-    img = cv.imread(path, 0)
-    noisy_gauss_img = noisy("gauss", img)
-    noisy_salt_pepper_img = noisy("s&p", img)
 
-    cv.imshow('Original', img)
-    cv.imshow('Gaussian noise', noisy_gauss_img)
-    cv.imshow('Salt and pepper noise', noisy_salt_pepper_img)
+    image_path = (
+        Path(__file__).resolve().parent.parent
+        / "images"
+        / "lena.jpg"
+    )
 
-    # Avergaing filter
-    average = cv.blur(img, (3,3))
-    cv.imshow('Average blur', average)
+    img = cv.imread(str(image_path), cv.IMREAD_GRAYSCALE)
 
-    # Gaussian blur
-    gaussian = cv.GaussianBlur(img, (3,3), 0)
-    cv.imshow('Gaussian blur', gaussian)
+    if img is None:
+        raise FileNotFoundError(f"Cannot load image: {image_path}")
 
-    # Median blur, good for salt and pepper noise
-    median = cv.medianBlur(noisy_salt_pepper_img, 3)
-    cv.imshow('Median', median)
+    # --------------------------------------------------------
+    # Add noise
+    # --------------------------------------------------------
 
-    cv.waitKey(0)
+    gaussian_noisy = add_gaussian_noise(img)
 
-if __name__ == '__main__':
+    salt_pepper_noisy = add_salt_pepper_noise(img)
+
+    # --------------------------------------------------------
+    # Filtering
+    # --------------------------------------------------------
+
+    # Mean filter
+    average_filtered = cv.blur(gaussian_noisy, (5, 5))
+
+    # Gaussian filter
+    gaussian_filtered = cv.GaussianBlur(
+        gaussian_noisy,
+        (5, 5),
+        sigmaX=1.0
+    )
+
+    # Median filter (excellent for salt & pepper noise)
+    median_filtered = cv.medianBlur(salt_pepper_noisy, 5)
+
+    images = [
+        img,
+        gaussian_noisy,
+        average_filtered,
+        gaussian_filtered,
+        salt_pepper_noisy,
+        median_filtered
+    ]
+
+    titles = [
+        "Original image",
+        "Gaussian noise",
+        "Average filter",
+        "Gaussian filter",
+        "Salt & Pepper noise",
+        "Median filter"
+    ]
+
+    show_images(images, titles)
+
+
+if __name__ == "__main__":
     main()
