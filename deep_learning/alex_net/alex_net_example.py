@@ -16,7 +16,7 @@ class_names = [name.split(',')[0] for name in image_net_names]
 
 # Download the pre-trained AlexNet model
 if not os.path.exists(model_path):
-    urllib.request.urlretrieve("http://dl.caffe.berkeleyvision.org/bvlc_alexnet.caffemodel", model_path)
+    urllib.request.urlretrieve("https://github.com/foss-for-synopsys-dwc-arc-processors/synopsys-caffe-models/raw/master/caffe_models/alexnet/caffe_model/bvlc_alexnet.caffemodel", model_path)
 
 # Load the pre-trained AlexNet model
 model = cv2.dnn.readNetFromCaffe(network_path, model_path)
