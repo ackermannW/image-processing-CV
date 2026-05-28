@@ -1,0 +1,30 @@
+name: image-processing-cv
+
+channels:
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.12
+  - pip
+
+  - pip:
+      - absl-py
+      - cloudpickle
+      - contourpy
+      - cycler
+      - dm-tree
+      - fonttools
+      - h5py
+      - ipykernel
+      - ipython
+      - keras
+      - kiwisolver
+      - matplotlib
+      - mtcnn
+      - numpy
+      - opencv-python
+      - pillow
+      - rich
+      - scipy
+      - spyder-kernel
