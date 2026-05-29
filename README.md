@@ -9,30 +9,47 @@
 This repository shows usage of OpenCV Python package for 
 digital image processing. 
 
-## Setup
+## Linux Setup
 
-1. Create conda environment:
-
-``` sh
-conda create --name digital-image-processing python==3.12
-```
-2. Change active environment:
-
-``` sh
-conda activate digital-image-processing
-```
-
-3. Clone the repository:
+1. Clone the repository:
 
 ``` sh 
-git clone https://github.com/ackermannW/image-processing-CV    
+git clone https://github.com/ackermannW/image-processing-CV
+cd image-processing-CV
 ```
 
-4. Navigate to the repository and install ``` pip ``` packages from ``` requirements.txt ```
+2. Run the bash setup script `setup.sh`. This script downloads `miniconda`, installs it and creates a python environment from the `environment.yml` file.
+When prompted accept the T&C by pressing `a`.
 
 ``` sh
-pip install -r requirements.txt 
+chmod a+x ./setup.sh
+./setup.sh
 ```
+
+3. Activate the environment by using
+
+``` bash
+conda activate image-processing-cv
+```
+
+## Windows Setup
+
+1. Make sure that GIT is installed.
+
+2. Clone the repository:
+
+``` sh 
+git clone https://github.com/ackermannW/image-processing-CV
+cd image-processing-CV
+```
+
+3. Run the powershell setup script `setup.ps1`. This script downloads `miniconda`, installs it and creates a python environment from the `environment.yml` file.
+When prompted accept the T&C by pressing `a`.
+
+``` sh
+.\setup.ps1
+```
+Note that it is also recommended to utilize Windows subsystem for Linux on Windows OS.
 
 # Contents
 
@@ -46,5 +63,6 @@ pip install -r requirements.txt
 
 # GPU setup 
 It is recommended to utilize GPU acceleration to speed up deep learning tasks.
-Instructions for CUDA cores can be [here for Windows](https://towardsdatascience.com/how-to-finally-install-tensorflow-gpu-on-windows-10-63527910f255) and [here for Linux](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html).
-
+Instructions for CUDA cores can be found [here](https://www.tensorflow.org/install/pip) 
+in the official Tensorflow documentation.
+Note that it is recommended to use WSL on Widnows OS.
