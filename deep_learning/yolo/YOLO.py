@@ -1,45 +1,29 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Mar 14 19:21:05 2022
-
-@author: Korisnik
-"""
+# pip uninstall torch torchvision torchaudio -y
+# pip cache purge
+# pip install torch==2.2.2 torchvision==0.17.2 torchaudio==2.2.2 --index-url https://download.pytorch.org/whl/cpu
 
 import cv2
 import os
-import urllib.request
+from ultralytics import YOLO
 
-current_path = os.path.join(os.getcwd(), 'deep_learning','yolo')
-img = cv2.imread(os.path.join(current_path, 'cars.jpg'))
+current_path = os.path.join(os.getcwd(), 'deep_learning', 'yolo')
 
-with open(os.path.join(current_path, 'coco.names'), 'r') as f:
-    classes = f.read().splitlines()
+# Load image
+img_path = os.path.join(current_path, 'cars.jpg')
+img = cv2.imread(img_path)
 
-config_path = os.path.join(current_path, 'yolov4.cfg')
+# Load pretrained model
+model = YOLO("yolo11n.pt")  # nano model
+# Run inference
+results = model(img)
+for box in results[0].boxes:
+    cls = int(box.cls[0])
+    conf = float(box.conf[0])
+    print(model.names[cls], conf)
 
-url = "https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights"
-filename = os.path.join(current_path, 'yolov4.weights')
-if not os.path.isfile(path=filename):
-    print("Downloading YOLO weights. This might take a while. File is approximately 250MB.")
-    urllib.request.urlretrieve(url, 'yolov4.weights')
-    print("Downloaded YOLO weights.")
+# Draw detections
+annotated = results[0].plot()
 
-net = cv2.dnn.readNetFromDarknet(config_path, filename)
- 
-model = cv2.dnn_DetectionModel(net)
-model.setInputParams(scale=1 / 255, size=(416, 416), swapRB=True)
- 
-classIds, scores, boxes = model.detect(img, confThreshold=0.6, nmsThreshold=0.4)
- 
-for (classId, score, box) in zip(classIds, scores, boxes):
-    cv2.rectangle(img, (box[0], box[1]), (box[0] + box[2], box[1] + box[3]),
-                  color=(0, 255, 0), thickness=2)
- 
-    text = '%s: %.2f' % (classes[classIds[0]], score)
-    #text ='Car'
-    cv2.putText(img, text, (box[0], box[1] - 5), cv2.FONT_HERSHEY_SIMPLEX, 1,
-                color=(0, 255, 0), thickness=2)
- 
-cv2.imshow('Image', img)
+cv2.imshow("YOLO11 Detection", annotated)
 cv2.waitKey(0)
 cv2.destroyAllWindows()
